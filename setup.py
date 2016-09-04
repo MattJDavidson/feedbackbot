@@ -23,7 +23,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='feedbackbot',
-    version='0.0.1',
+    version='0.0.2',
     description='Slack bot to provide teammates with anonymous feedback.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Matt Davidson',
