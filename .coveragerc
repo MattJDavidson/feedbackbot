@@ -1,0 +1,12 @@
+[paths]
+source = feedbackbot/feedbackbot.py
+
+[run]
+branch = True
+source = feedbackbot/feedbackbot.py
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
+omit = *migrations*
