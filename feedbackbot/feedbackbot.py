@@ -8,7 +8,7 @@ import argparse
 import os
 import re
 import sys
-from slackclient import SlackClient
+from slacker import Slacker
 
 
 DESCRIPTION = 'Procedure to provide teammates with anonymous feedback on slack'
@@ -27,29 +27,29 @@ FEEDBACK_STRING = 'An anonymous user wanted to tell you: "{}"'
 def list_im_channels(client):
     """Returns the ids of the channels the user is participating in.
     """
-    r = client.api_call('im.list')
-    return [c for c in r.get('ims')] if r.get('ok') else []
+    r = client.im.list()
+    return [c for c in r.body.get('ims')] if r.successful else []
 
 
 def list_text_from_channel(client, channel_id, oldest=0):
     """Create a list of the individual messages in a channel.
     """
-    r = client.api_call('im.history', channel=channel_id, oldest=oldest)
-    return [m.get('text') for m in r.get('messages')] if r.get('ok') else []
+    r = client.im.history(channel=channel_id, oldest=oldest)
+    return [m.get('text') for m in r.body.get('messages')] \
+        if r.successful else []
 
 
 def open_im(client, user_id):
-    r = client.api_call('im.open', user=user_id)
-    return r.get('ok')
+    r = client.im.open(user=user_id)
+    return r.successful
 
 
 def post_message(client, channel_id, text):
-    r = client.api_call(
-        'chat.postMessage',
+    r = client.chat.post_message(
         channel=channel_id,
         text=FEEDBACK_STRING.format(text),
         as_user=True)
-    return r.get('ok')
+    return r.successful
 
 
 def get_feedback_ims(client):
@@ -64,8 +64,8 @@ def get_feedback_ims(client):
 
 
 def list_users(client):
-    r = client.api_call('users.list')
-    return r.get('members') if r.get('ok') else []
+    r = client.users.list()
+    return r.body.get('members') if r.successful else []
 
 
 def get_im_channel_id(client, user_id):
@@ -131,7 +131,8 @@ def main():
     parser.add_argument('--token', action='store', dest='token')
     token = get_token(parser)
 
-    client = SlackClient(token)
+    client = Slacker(token)
+
     process(client)
 
 
